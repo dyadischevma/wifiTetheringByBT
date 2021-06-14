@@ -1,0 +1,2 @@
+rootProject.name = "wifiTetheringByBT"
+include ':app'
