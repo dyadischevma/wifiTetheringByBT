@@ -15,6 +15,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.WifiTetheringByBT">
+        <service
+            android:name=".MyForegroundService"
+            android:enabled="true"
+            android:exported="true"></service>
+
         <receiver
             android:name=".MyBTReceiver"
             android:enabled="true"
