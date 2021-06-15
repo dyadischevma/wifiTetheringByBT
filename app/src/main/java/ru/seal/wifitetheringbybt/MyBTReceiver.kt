@@ -12,8 +12,8 @@ import ru.seal.wifitetheringbybt.wifi.OreoWifiManager
 class MyBTReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
-        val sharedPreferences = context.getSharedPreferences("MyBT",  Context.MODE_PRIVATE)
-        val name = sharedPreferences.getString("SavedBTName", null)?:""
+        val sharedPreferences = context.getSharedPreferences("MyBT", Context.MODE_PRIVATE)
+        val name = sharedPreferences.getString("SavedBTName", null)
 
         BluetoothAdapter.getDefaultAdapter().getProfileProxy(
             context,
@@ -26,7 +26,8 @@ class MyBTReceiver : BroadcastReceiver() {
         }
         if (intent.action == "android.bluetooth.device.action.ACL_DISCONNECTED") {
             Toast.makeText(context, "ACL_DISCONNECTED", Toast.LENGTH_LONG).show()
-            OreoWifiManager(context).stop()
         }
     }
+
+
 }
