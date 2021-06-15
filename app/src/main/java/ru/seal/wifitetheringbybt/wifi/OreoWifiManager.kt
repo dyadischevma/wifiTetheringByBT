@@ -1,4 +1,4 @@
-package com.example.mybtapp.wifi
+package ru.seal.wifitetheringbybt.wifi
 
 import android.annotation.SuppressLint
 import android.content.Context

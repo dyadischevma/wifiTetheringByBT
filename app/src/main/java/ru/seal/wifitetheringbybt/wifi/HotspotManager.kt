@@ -1,4 +1,4 @@
-package com.example.mybtapp.wifi
+package ru.seal.wifitetheringbybt.wifi
 
 import androidx.lifecycle.MutableLiveData
 

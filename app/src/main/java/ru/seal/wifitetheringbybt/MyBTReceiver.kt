@@ -6,8 +6,8 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.widget.Toast
-import com.example.mybtapp.bt.MyBTServiceListener
-import com.example.mybtapp.wifi.OreoWifiManager
+import ru.seal.wifitetheringbybt.bt.MyBTServiceListener
+import ru.seal.wifitetheringbybt.wifi.OreoWifiManager
 
 class MyBTReceiver : BroadcastReceiver() {
 
