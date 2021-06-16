@@ -10,45 +10,38 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
-import android.widget.TextView
+import ru.seal.wifitetheringbybt.Constants.APP_NAME
+import ru.seal.wifitetheringbybt.Constants.SAVED_BT_NAME
 
-class MainActivity  : AppCompatActivity() {
+class MainActivity : AppCompatActivity() {
     var spinInited = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val context = applicationContext
-        // Check whether has the write settings permission or not.
-        val settingsCanWrite = Settings.System.canWrite(context);
+        val settingsCanWrite = Settings.System.canWrite(applicationContext)
         if (!settingsCanWrite) {
-            // If do not have write settings permission then open the Can modify system settings panel.
-            val intent = Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS);
-            startActivity(intent);
-        } else {
-            findViewById<TextView>(R.id.textViewGrants).text =
-                "You have system write settings permission now."
+            val intent = Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS)
+            startActivity(intent)
         }
 
-        val mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
-        val pairedDevices = mBluetoothAdapter.bondedDevices
-
         val btDevicesList: MutableList<String> = ArrayList()
-        for (bt in pairedDevices) {
-            btDevicesList.add(bt.name)
+        for (btDevice in BluetoothAdapter.getDefaultAdapter().bondedDevices) {
+            btDevicesList.add(btDevice.name)
         }
 
         val spinner: Spinner = findViewById(R.id.spinner)
-
-        val sharedPreferences = this.getSharedPreferences("MyBT", Context.MODE_PRIVATE)
         val arrayAdapter: ArrayAdapter<String> = ArrayAdapter(
             this,
-            android.R.layout.simple_spinner_item, btDevicesList
+            android.R.layout.simple_spinner_item,
+            btDevicesList
         )
 
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner.adapter = arrayAdapter
+
+        val sharedPreferences = this.getSharedPreferences(APP_NAME, Context.MODE_PRIVATE)
 
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
@@ -59,14 +52,16 @@ class MainActivity  : AppCompatActivity() {
             ) {
                 if (!spinInited) {
                     spinInited = true
-                    val name = sharedPreferences.getString("SavedBTName", null)
+                    val name = sharedPreferences.getString(SAVED_BT_NAME, null)
                     if (name != null) {
                         spinner.setSelection(btDevicesList.indexOf(name))
                     } else {
                         spinner.setSelection(0)
                     }
                 } else {
-                    sharedPreferences.edit().putString("SavedBTName", btDevicesList[position])
+                    sharedPreferences
+                        .edit()
+                        .putString(SAVED_BT_NAME, btDevicesList[position])
                         .apply()
                 }
             }
