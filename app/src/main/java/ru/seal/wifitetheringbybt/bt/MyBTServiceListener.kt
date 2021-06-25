@@ -3,6 +3,7 @@ package ru.seal.wifitetheringbybt.bt
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothProfile
 import android.content.Context
+import ru.seal.wifitetheringbybt.Constants
 import ru.seal.wifitetheringbybt.wifi.OreoWifiManager
 
 class MyBTServiceListener(
@@ -11,10 +12,16 @@ class MyBTServiceListener(
 ) : BluetoothProfile.ServiceListener {
 
     override fun onServiceConnected(profile: Int, proxy: BluetoothProfile) {
-        if (isConnected(deviceName, proxy)) {
+        val sharedPreferences =
+            context.getSharedPreferences(Constants.APP_NAME, Context.MODE_PRIVATE)
+        val isEnabledTethering = sharedPreferences.getBoolean(Constants.IS_ENABLED_TETHERING, false)
+
+        if (isConnected(deviceName, proxy) && !isEnabledTethering) {
             OreoWifiManager(context).start()
         } else {
-            OreoWifiManager(context).stop()
+            if (isEnabledTethering) {
+                OreoWifiManager(context).stop()
+            }
         }
         BluetoothAdapter.getDefaultAdapter().closeProfileProxy(profile, proxy)
     }

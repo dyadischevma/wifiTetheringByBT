@@ -8,6 +8,7 @@ import android.os.Handler
 import android.util.Log
 import androidx.annotation.RequiresApi
 import com.android.dx.stock.ProxyBuilder
+import ru.seal.wifitetheringbybt.Constants
 
 @RequiresApi(Build.VERSION_CODES.O)
 class OreoWifiManager(private val context: Context) : HotspotManager() {
@@ -54,6 +55,13 @@ class OreoWifiManager(private val context: Context) : HotspotManager() {
                     null
                 )
                 Log.d( "My_WiFi","startTethering invoked")
+
+                val sharedPreferences =
+                    context.getSharedPreferences(Constants.APP_NAME, Context.MODE_PRIVATE)
+                sharedPreferences
+                    .edit()
+                    .putBoolean(Constants.IS_ENABLED_TETHERING, true)
+                    .apply()
             } catch (e: Exception) {
                 Log.e( "My_WiFi","Error in enableTethering")
                 e.printStackTrace()
@@ -85,6 +93,13 @@ class OreoWifiManager(private val context: Context) : HotspotManager() {
             method.invoke(connectivityManager, ConnectivityManager.TYPE_MOBILE)
             Log.d( "My_WiFi","stopTethering invoked")
             hotspotLiveData.postValue(HotspotEvent(HotspotEvent.Type.STOP_SUCCESS))
+
+            val sharedPreferences =
+                context.getSharedPreferences(Constants.APP_NAME, Context.MODE_PRIVATE)
+            sharedPreferences
+                .edit()
+                .putBoolean(Constants.IS_ENABLED_TETHERING, false)
+                .apply()
         } catch (e: Exception) {
             Log.e( "My_WiFi","stopTethering error: $e")
             e.printStackTrace()
