@@ -6,6 +6,7 @@ import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Handler
 import android.util.Log
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import com.android.dx.stock.ProxyBuilder
 import ru.seal.wifitetheringbybt.Constants
@@ -54,7 +55,7 @@ class OreoWifiManager(private val context: Context) : HotspotManager() {
                     proxy,
                     null
                 )
-                Log.d( "My_WiFi","startTethering invoked")
+                Log.d("My_WiFi", "startTethering invoked")
 
                 val sharedPreferences =
                     context.getSharedPreferences(Constants.APP_NAME, Context.MODE_PRIVATE)
@@ -62,8 +63,10 @@ class OreoWifiManager(private val context: Context) : HotspotManager() {
                     .edit()
                     .putBoolean(Constants.IS_ENABLED_TETHERING, true)
                     .apply()
+
+                Toast.makeText(context, "WiFi tethering enabled", Toast.LENGTH_LONG).show()
             } catch (e: Exception) {
-                Log.e( "My_WiFi","Error in enableTethering")
+                Log.e("My_WiFi", "Error in enableTethering")
                 e.printStackTrace()
                 hotspotLiveData.postValue(
                     HotspotEvent(
@@ -73,7 +76,7 @@ class OreoWifiManager(private val context: Context) : HotspotManager() {
                 )
             }
         } catch (e: Exception) {
-            Log.e( "My_WiFi","Error in enableTethering ProxyBuilder")
+            Log.e("My_WiFi", "Error in enableTethering ProxyBuilder")
             e.printStackTrace()
             hotspotLiveData.postValue(
                 HotspotEvent(
@@ -91,7 +94,7 @@ class OreoWifiManager(private val context: Context) : HotspotManager() {
                 Int::class.javaPrimitiveType
             )
             method.invoke(connectivityManager, ConnectivityManager.TYPE_MOBILE)
-            Log.d( "My_WiFi","stopTethering invoked")
+            Log.d("My_WiFi", "stopTethering invoked")
             hotspotLiveData.postValue(HotspotEvent(HotspotEvent.Type.STOP_SUCCESS))
 
             val sharedPreferences =
@@ -100,8 +103,10 @@ class OreoWifiManager(private val context: Context) : HotspotManager() {
                 .edit()
                 .putBoolean(Constants.IS_ENABLED_TETHERING, false)
                 .apply()
+
+            Toast.makeText(context, "WiFi tethering disabled", Toast.LENGTH_LONG).show()
         } catch (e: Exception) {
-            Log.e( "My_WiFi","stopTethering error: $e")
+            Log.e("My_WiFi", "stopTethering error: $e")
             e.printStackTrace()
             hotspotLiveData.postValue(
                 HotspotEvent(
@@ -117,7 +122,7 @@ class OreoWifiManager(private val context: Context) : HotspotManager() {
         try {
             return Class.forName("android.net.ConnectivityManager\$OnStartTetheringCallback")
         } catch (e: ClassNotFoundException) {
-            Log.e( "My_WiFi","onStartTetheringCallbackClass error: %s", e)
+            Log.e("My_WiFi", "onStartTetheringCallbackClass error: %s", e)
             e.printStackTrace()
         }
 

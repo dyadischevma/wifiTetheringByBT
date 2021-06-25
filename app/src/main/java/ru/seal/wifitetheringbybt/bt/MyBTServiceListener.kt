@@ -16,8 +16,10 @@ class MyBTServiceListener(
             context.getSharedPreferences(Constants.APP_NAME, Context.MODE_PRIVATE)
         val isEnabledTethering = sharedPreferences.getBoolean(Constants.IS_ENABLED_TETHERING, false)
 
-        if (isConnected(deviceName, proxy) && !isEnabledTethering) {
-            OreoWifiManager(context).start()
+        if (isConnected(deviceName, proxy)) {
+            if (!isEnabledTethering) {
+                OreoWifiManager(context).start()
+            }
         } else {
             if (isEnabledTethering) {
                 OreoWifiManager(context).stop()
