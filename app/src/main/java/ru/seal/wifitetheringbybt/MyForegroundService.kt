@@ -10,40 +10,13 @@ import android.content.Intent
 import android.os.IBinder
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
+import ru.seal.wifitetheringbybt.bt.MyBTServiceListener
 import ru.seal.wifitetheringbybt.wifi.OreoWifiManager
 
 
 class MyForegroundService : Service() {
     val CHANNEL_ID = "ForegroundServiceChannel"
     val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
-    var bluetoothHeadset: BluetoothHeadset? = null
-    var bluetoothDevice: BluetoothDevice? = null
-
-    val profileListener = object : BluetoothProfile.ServiceListener {
-
-        override fun onServiceConnected(profile: Int, proxy: BluetoothProfile) {
-            val sharedPreferences =
-                applicationContext.getSharedPreferences("MyBT", Context.MODE_PRIVATE)
-            val name = sharedPreferences.getString("SavedBTName", null)
-            if (profile == BluetoothProfile.HEADSET) {
-                bluetoothHeadset = proxy as BluetoothHeadset
-            }
-            for (device in proxy.connectedDevices) {
-                if (device.name == name) {
-                    bluetoothDevice = device
-                    OreoWifiManager(applicationContext).start()
-                }
-            }
-        }
-
-        override fun onServiceDisconnected(profile: Int) {
-            Toast.makeText(
-                applicationContext,
-                "onServiceDisconnectedFromForeground",
-                Toast.LENGTH_LONG
-            ).show()
-        }
-    }
 
     override fun onBind(intent: Intent): IBinder {
         TODO("Return the communication channel to the service.")
@@ -67,17 +40,16 @@ class MyForegroundService : Service() {
         //do heavy work on a background thread
         //stopSelf();
 
+        val sharedPreferences =
+            this.getSharedPreferences(Constants.APP_NAME, Context.MODE_PRIVATE)
+        val name = sharedPreferences.getString(Constants.SAVED_BT_NAME, null)
+
         bluetoothAdapter?.getProfileProxy(
             applicationContext,
-            profileListener,
+            MyBTServiceListener(this, name),
             BluetoothProfile.HEADSET
         )
         return START_NOT_STICKY
-    }
-
-    override fun onDestroy() {
-        bluetoothAdapter?.closeProfileProxy(BluetoothProfile.HEADSET, bluetoothHeadset)
-        super.onDestroy()
     }
 
     private fun createNotificationChannel() {
