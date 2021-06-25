@@ -18,17 +18,12 @@ class MyBTReceiver : BroadcastReceiver() {
         val sharedPreferences = context.getSharedPreferences(APP_NAME, Context.MODE_PRIVATE)
         val name = sharedPreferences.getString(SAVED_BT_NAME, null)
 
-        BluetoothAdapter.getDefaultAdapter().getProfileProxy(
-            context,
-            MyBTServiceListener(context, name),
-            BluetoothProfile.HEADSET
-        )
-
-        if (intent.action == ACL_CONNECTED) {
-            Toast.makeText(context, "ACL_CONNECTED", Toast.LENGTH_LONG).show()
-        }
-        if (intent.action == ACL_DISCONNECTED) {
-            Toast.makeText(context, "ACL_DISCONNECTED", Toast.LENGTH_LONG).show()
+        if (intent.action == ACL_CONNECTED || intent.action == ACL_DISCONNECTED) {
+            BluetoothAdapter.getDefaultAdapter().getProfileProxy(
+                context,
+                MyBTServiceListener(context, name),
+                BluetoothProfile.HEADSET
+            )
         }
     }
 }
