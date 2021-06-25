@@ -20,11 +20,4 @@ class HotspotEvent(val type: Type, val error: String? = null) {
     var ssid: String? = null
     var password: String? = null
 
-    fun asCredentials(): Boolean {
-        return !ssid.isNullOrEmpty() && !password.isNullOrEmpty()
-    }
-
-    fun hasError(): Boolean {
-        return !error.isNullOrEmpty()
-    }
 }
